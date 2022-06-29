@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ListingController;
 use App\Models\Listings;
 use Illuminate\Support\Facades\Route;
@@ -17,10 +18,23 @@ use Illuminate\Support\Facades\Route;
 // Show all the listings
 Route::get('/', [ListingController::class, 'index']);
 
-
+// Create New users
+Route::post('/user', [UserController::class, 'store']);
 
 // Show create form
 Route::get('/listings/create', [ListingController::class, 'create']);
+
+// Register user
+Route::get('/register', [UserController::class, 'register']);
+
+// Show Edit form
+Route::get('/listings/{listing}/edit', [ListingController::class, 'edit']);
+
+// Update
+Route::put('/listings/{listing}', [ListingController::class, 'update']);
+
+// Delete
+Route::delete('/listings/{listing}', [ListingController::class, 'delete']);
 
 // Store list data
 Route::post('/listings', [ListingController::class, 'store']);
