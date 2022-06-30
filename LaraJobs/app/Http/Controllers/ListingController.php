@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Listings;
+use App\Models\User;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class ListingController extends Controller
     // Store Data 
     public function store(Request $request) {
         
-        $formField = $request->validate([
+        $formFields = $request->validate([
             'title' => 'required',
             'company-name' => ['required'],
             'location' => 'required',
@@ -43,9 +44,10 @@ class ListingController extends Controller
         if($request->hasFile('logo')) {
             $formField['logo'] = $request->file('logo')->store('logos','public');
         }
-        Listings::create($formField);
 
-        
+        $formFields['user_id'] = auth()->id();
+
+        Listings::create($formFields);        
 
         return redirect('/')->with('message', 'Listing created successfully!');
     }
@@ -59,8 +61,14 @@ class ListingController extends Controller
 
     // Update listing data
     public function update(Request $request, Listings $listing) {
-        
-        $formField = $request->validate([
+
+        // Make sure logged user os owner
+        if($listing->user_id != auth()->id()) {
+            abort(403, 'Unauthorized Action');
+        }
+
+
+        $formFields = $request->validate([
             'title' => 'required',
             'company-name' => ['required'],
             'location' => 'required',
@@ -71,10 +79,10 @@ class ListingController extends Controller
         ]);
 
         if($request->hasFile('logo')) {
-            $formField['logo'] = $request->file('logo')->store('logos','public');
+            $formFields['logo'] = $request->file('logo')->store('logos','public');
         }
 
-        $listing->update($formField);
+        $listing->update($formFields);
 
         
 
@@ -84,9 +92,22 @@ class ListingController extends Controller
     // Delete
     
     public function delete(Listings $listing) {
+        // Make sure logged user os owner
+        if($listing->user_id != auth()->id()) {
+            abort(403, 'Unauthorized Action');
+        }
+
         $listing-> delete();
 
         return redirect('/')->with('message', 'Listing deleted successfully!');
+
+    }
+
+    public function manage(){
+
+        
+
+        return view('listings.manage', ['listings'=>auth()->user()->listings()->get()]);
 
     }
     

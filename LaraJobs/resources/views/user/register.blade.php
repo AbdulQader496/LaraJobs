@@ -24,7 +24,7 @@
                                 type="text"
                                 class="border border-gray-200 rounded p-2 w-full"
                                 name="name"
-                                {{old('name')}}
+                                value="{{old('name')}}""
                             />
                             @error('name')
                                 <p class="text-red-500" text-xs mt-1>{{$message}}</p>
@@ -39,7 +39,7 @@
                                 type="email"
                                 class="border border-gray-200 rounded p-2 w-full"
                                 name="email"
-                                {{old('email')}}
+                                value="{{old('email')}}"
                             />
                             @error('email')
                                 <p class="text-red-500" text-xs mt-1>{{$message}}</p>
@@ -92,7 +92,7 @@
                         <div class="mt-8">
                             <p>
                                 Already have an account?
-                                <a href="login.html" class="text-laravel"
+                                <a href="/login" class="text-laravel"
                                     >Login</a
                                 >
                             </p>
